@@ -1,0 +1,26 @@
+{
+  "name": "hyperliquid-telegram-monitor",
+  "version": "1.0.0",
+  "description": "Monitor Hyperliquid trading activities and send notifications to Telegram",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "setup": "node setup-admin.js"
+  },
+  "keywords": [
+    "hyperliquid",
+    "telegram",
+    "monitor",
+    "websocket",
+    "trading"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "node-telegram-bot-api": "^0.64.0",
+    "ws": "^8.14.2",
+    "better-sqlite3": "^9.2.2"
+  }
+}
