@@ -7,7 +7,7 @@ class ApiClient {
     this.requestQueue = [];
     this.isProcessing = false;
     this.retryDelay = 1000; // 重试延迟 1 秒
-    this.maxRetries = 3; // 最大重试次数
+    this.maxRetries = 0; // 最大重试次数
     
     if (this.enabled && this.webhookUrl) {
       console.log(`✅ API Webhook 已启用: ${this.webhookUrl}`);
@@ -114,19 +114,19 @@ class ApiClient {
       }
 
       // 重试机制
-      if (retryCount < this.maxRetries) {
-        console.log(`🔄 [${now}] 将在 ${this.retryDelay / 1000} 秒后重试 (${retryCount + 1}/${this.maxRetries})`);
-        
-        setTimeout(() => {
-          this.requestQueue.push({
-            payload,
-            tradeInfo,
-            retryCount: retryCount + 1
-          });
-        }, this.retryDelay);
-      } else {
-        console.error(`❌ [${now}] 达到最大重试次数，放弃发送`);
-      }
+      // if (retryCount < this.maxRetries) {
+      //   console.log(`🔄 [${now}] 将在 ${this.retryDelay / 1000} 秒后重试 (${retryCount + 1}/${this.maxRetries})`);
+      //
+      //   setTimeout(() => {
+      //     this.requestQueue.push({
+      //       payload,
+      //       tradeInfo,
+      //       retryCount: retryCount + 1
+      //     });
+      //   }, this.retryDelay);
+      // } else {
+      //   console.error(`❌ [${now}] 达到最大重试次数，放弃发送`);
+      // }
     }
   }
 
