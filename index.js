@@ -2,12 +2,14 @@ require('dotenv').config();
 const DatabaseManager = require('./src/database');
 const HyperliquidMonitor = require('./src/hyperliquid-monitor');
 const TelegramBotManager = require('./src/telegram-bot');
+const ApiClient = require('./src/api-client');
 
 class MonitorApp {
   constructor() {
     this.db = null;
     this.monitor = null;
     this.bot = null;
+    this.apiClient = null;
     this.isShuttingDown = false;
   }
 
@@ -36,6 +38,19 @@ class MonitorApp {
         process.env.TG_CHANNEL_ID,
         this.db
       );
+
+      // 初始化 API 客户端
+      console.log('🌐 初始化 API 客户端...');
+      const apiEnabled = process.env.API_WEBHOOK_ENABLED === 'true';
+      this.apiClient = new ApiClient(
+        process.env.API_WEBHOOK_URL,
+        apiEnabled
+      );
+
+      // 测试 API 连接（如果启用）
+      if (apiEnabled) {
+        await this.apiClient.testConnection();
+      }
 
       // 设置事件监听
       this.setupEventListeners();
@@ -79,7 +94,14 @@ class MonitorApp {
     // 监听交易事件
     this.monitor.on('trade', async (tradeInfo) => {
       console.log('📊 交易事件:', tradeInfo);
+      
+      // 发送 Telegram 通知
       await this.bot.sendTradeNotification(tradeInfo);
+      
+      // 发送到外部 API
+      if (this.apiClient) {
+        await this.apiClient.sendTradeSignal(tradeInfo);
+      }
     });
 
     // 监听用户事件
